@@ -1,0 +1,15 @@
+# Our PostgreSQL service:
+postgres:
+  image: postgres:9.4.5
+  ports:
+    - "5432:5432" 
+  environment:
+    LC_ALL: C.UTF-8
+    POSTGRES_PASSWORD: neveralone
+
+neo4j:
+  image: neo4j/neo4j:latest
+  ports:
+    - "7474:7474"
+  environment:
+    NEO4J_NO_AUTH: true
