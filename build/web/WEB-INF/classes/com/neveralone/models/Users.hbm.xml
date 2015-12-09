@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Dec 9, 2015 8:37:42 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.neveralone.models.Users" table="users" optimistic-lock="version">
+        <id name="id" type="int">
+            <column name="id" />
+            <generator class="assigned" />
+        </id>
+        <property name="email" type="string">
+            <column name="email" length="50" not-null="true" unique="true" />
+        </property>
+        <property name="password" type="string">
+            <column name="password" length="50" not-null="true" />
+        </property>
+        <property name="dob" type="date">
+            <column name="dob" length="13" not-null="true" />
+        </property>
+        <property name="gender" type="char">
+            <column name="gender" length="1" not-null="true" />
+        </property>
+        <property name="interestedIn" type="char">
+            <column name="interested_in" length="1" not-null="true" />
+        </property>
+        <property name="status" type="boolean">
+            <column name="status" not-null="true" />
+        </property>
+        <property name="createdAt" type="date">
+            <column name="created_at" length="13" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

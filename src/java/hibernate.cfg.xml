@@ -4,9 +4,10 @@
   <session-factory>
     <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
     <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-    <property name="hibernate.connection.url">jdbc:postgresql://pellefant-01.db.elephantsql.com:5432/mwoangrm</property>
-    <property name="hibernate.connection.username">mwoangrm</property>
-    <property name="hibernate.connection.password">f5a-IPZC1tn0Ff1glbEWJS-RHZ-qtVyk</property>
+    <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/postgres</property>
+    <property name="hibernate.connection.username">postgres</property>
+    <property name="hibernate.connection.password">neveralone</property>
     <property name="hibernate.default_schema">public</property>
+    <mapping resource="com/neveralone/models/Users.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>
