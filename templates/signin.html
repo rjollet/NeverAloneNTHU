@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% comment %}
+  Signin
+{% endcomment %}
+
+{% block head %}
+  <title>Signin</title>
+{% endblock %}
+
+{% block body %}
+	<header>
+	  	<h1>Signin</h1>
+	</header>
+
+	<form action="/signin/" method="post">
+	    {% csrf_token %}
+	    {{ form.as_p }}
+	    <input type="submit" value="Submit" />
+	</form>
+{% endblock %}

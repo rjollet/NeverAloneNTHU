@@ -25,6 +25,7 @@ urlpatterns = [
     # Login / logout.
     url(r'^login/$', 'django.contrib.auth.views.login'),
     url(r'^logout/$', logout_page),
+    url(r'^signin/$', signin),
 
     #app
 	url(r'^app/', include('app.urls')),
