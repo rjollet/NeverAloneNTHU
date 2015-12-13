@@ -19,3 +19,21 @@ Torun our project
 ```
 docker-compose up
 ```
+
+## [Django](https://docs.djangoproject.com/en/1.9/)
+
+To create a new project
+```
+$ docker-compose run web django-admin.py startproject neveralone .
+
+```
+
+To create a new app
+```
+docker-compose run web python manage.py startapp app
+```
+
+Afeter generating a project or app you may need to change the ownership
+```
+sudo chown -R $USER:$USER .
+```
