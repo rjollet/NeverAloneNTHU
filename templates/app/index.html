@@ -1,0 +1,15 @@
+{% extends "app/app.html" %}
+{% comment %}
+  Main page of the NeverAlone.
+{% endcomment %}
+
+{% block title %}
+  Never Alone
+{% endblock %}
+
+{% block content %}
+  <section>
+    <h2>Welcome, {{ user.username }}</h2>
+    <p>This is the main page of the web NeverAlone.</p>
+  </section>
+{% endblock %}

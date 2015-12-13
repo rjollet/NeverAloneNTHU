@@ -16,10 +16,23 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.contrib.auth import views as auth_views																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	
+from neveralone.views import *
 
 urlpatterns = [
+	url(r'^$', main_page),
+
+    # Login / logout.
+    url(r'^login/$', 'django.contrib.auth.views.login'),
+    url(r'^logout/$', logout_page),
+
+    #app
 	url(r'^app/', include('app.urls')),
+    
+    #admin
     url(r'^admin/', admin.site.urls),
+
+
 ]
 
 

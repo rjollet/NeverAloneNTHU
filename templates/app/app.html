@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% comment %}
+  This is the main template for all app pages.
+{% endcomment %}
+
+{% block head %}
+  <title>NeverAlone | {% block title %}{% endblock %}</title>
+{% endblock %}
+
+{% block body %}
+  <header>
+    <h1>NeverAlone | Web app</h1>
+  </header>
+
+  <section>
+    <ul>
+      <li><a href="/">home</a></li>
+      <li><a href="/logout/">logout</a></li>
+    </ul>
+  </section>
+
+  {% block content %}{% endblock %}
+
+  <footer>
+    <span>&copy; 2015, NeverAloneNTHU</span>
+  </footer>
+{% endblock %}

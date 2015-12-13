@@ -22,9 +22,20 @@ docker-compose up
 
 ## [Django](https://docs.djangoproject.com/en/1.9/)
 
+Set-up your superuser to have access to [the admin](http://localhost:8000/admin)
+```
+docker-compose run web python manage.py createsuperuser
+```
+
+Migrate is use to auto generate the model defined in models.py in the database 
+```
+docker-compose run web python manage.py migrate
+
+```
+
 To create a new project
 ```
-$ docker-compose run web django-admin.py startproject neveralone .
+docker-compose run web django-admin.py startproject neveralone .
 
 ```
 
