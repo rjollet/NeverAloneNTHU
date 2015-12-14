@@ -2,7 +2,6 @@ from django import forms
 from django.forms import ModelForm
 from app.models import UserProfile
 
-
 class UserProfileSigninForm(ModelForm):
 
     class Meta:

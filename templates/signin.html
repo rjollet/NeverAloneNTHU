@@ -8,14 +8,14 @@
 {% endblock %}
 
 {% block body %}
-    <header>
-        <h1>Signin</h1>
-    </header>
+	<header>
+	  	<h1>Signin</h1>
+	</header>
 
-    <form method="POST" action="/signin/">
-        {% csrf_token %}
-        {{userform}}
-        {{userprofileform}}
-        <input type="submit">
-    </form>
+	<form method="POST" action="/signin/">
+	    {% csrf_token %}
+	    {{userform}}
+	    {{userprofileform}}
+	    <input type="submit">
+	</form>
 {% endblock %}

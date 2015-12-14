@@ -4,18 +4,18 @@
 {% endcomment %}
 
 {% block head %}
+  {% load staticfiles %}
+
+  <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
   <title>NeverAlone</title>
 {% endblock %}
 
 {% block body %}
-  <header>
+  <div class="jumbotron">
       <h1>NeverAlone</h1>
-  </header>
-
-  <section>
-        <p>Welcome to NeverAlone. Please click <a href="/app/">here</a> to log into our web app.</p>
-  </section>
-  <section>
-	    <a href="/signin/">signin</a>
-  </section>
+      <p>Welcome to NeverAlone. The best place to never be alone again</p>
+      <a href="/app/" type="button" class="btn btn-lg btn-success active" role="button">Get in</a>
+      <a href="/signin/" type="button" class="btn btn-lg btn-primary active" role="button">signin</a>
+  </div>
 {% endblock %}
+
