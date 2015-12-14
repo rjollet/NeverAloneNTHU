@@ -1,6 +1,12 @@
 from django import forms
+from django.forms import ModelForm
+from app.models import UserProfile
 
-class SigninForm(forms.Form):
-    username = forms.CharField()
-    email = forms.EmailField()
-    password = forms.CharField()
+
+class UserProfileSigninForm(ModelForm):
+
+    class Meta:
+        model = UserProfile
+        fields = ['gender', 'sexuality', 'dob']
+        localized_fields = ('dob',)
+
