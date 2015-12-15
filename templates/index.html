@@ -4,9 +4,6 @@
 {% endcomment %}
 
 {% block head %}
-  {% load staticfiles %}
-
-  <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
   <title>NeverAlone</title>
 {% endblock %}
 
@@ -14,8 +11,30 @@
   <div class="jumbotron">
       <h1>NeverAlone</h1>
       <p>Welcome to NeverAlone. The best place to never be alone again</p>
-      <a href="/app/" type="button" class="btn btn-lg btn-success active" role="button">Get in</a>
-      <a href="/signin/" type="button" class="btn btn-lg btn-primary active" role="button">signin</a>
+
+      <form method="POST" action="/signin/">
+	    {% csrf_token %}
+	    {{userform}}
+	    {{userprofileform}}
+	    <input type="submit" value="Submit" class="btn btn-lg btn-primary">
+	  </form>
+
+	  <form method="post" action="/login/" class="form-signin">
+	  	{% if user.is_authenticated %}
+	  	  <a href="/app/" type="button" class="btn btn-lg btn-success active" role="button">Get in</a>
+	  	{% else %}
+	      <h2 class="form-signin-heading">Please sign in</h2>
+	      {% csrf_token %}
+	      {{authform}}
+	      {% if next %}
+      	    <input type="hidden" name="next" value="{{ next }}" />
+	      {% else %}
+	        <input type="hidden" name="next" value="/app/" />
+	      {% endif %}
+	      <input type="submit" value="login" class="btn btn-lg btn-primary">
+	    {% endif %}
+	  </form>
+
   </div>
 {% endblock %}
 

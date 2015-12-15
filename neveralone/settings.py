@@ -148,4 +148,4 @@ TEMPLATES = [
 ]
 
 # URL of the login page.
-LOGIN_URL = '/login/'
+LOGIN_URL = '/'

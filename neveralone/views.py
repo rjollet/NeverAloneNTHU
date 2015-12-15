@@ -5,13 +5,16 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 from .forms import UserProfileSigninForm
 
 
 def main_page(request):
-    return render_to_response('index.html')
+    af = AuthenticationForm()
+    uf = UserCreationForm(prefix='user')
+    upf = UserProfileSigninForm(prefix='userprofile')
+    return render_to_response('index.html', dict(authform=af, userform=uf, userprofileform=upf), context_instance=RequestContext(request))
 
 def logout_page(request):
     """
@@ -33,11 +36,3 @@ def signin(request):
             login(request, user)
             print("User is valid, active and authenticated")
             return HttpResponseRedirect('/app/')
-
-    else:
-        uf = UserCreationForm(prefix='user')
-        upf = UserProfileSigninForm(prefix='userprofile')
-    return render_to_response('signin.html', 
-                                               dict(userform=uf,
-                                                    userprofileform=upf),
-                                               context_instance=RequestContext(request))
