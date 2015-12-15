@@ -19,21 +19,25 @@
 	    <input type="submit" value="Submit" class="btn btn-lg btn-primary">
 	  </form>
 
+	  {% if not authform %}
 	  <form method="post" action="/login/" class="form-signin">
-	  	{% if user.is_authenticated %}
-	  	  <a href="/app/" type="button" class="btn btn-lg btn-success active" role="button">Get in</a>
-	  	{% else %}
-	      <h2 class="form-signin-heading">Please sign in</h2>
-	      {% csrf_token %}
-	      {{authform}}
-	      {% if next %}
-      	    <input type="hidden" name="next" value="{{ next }}" />
-	      {% else %}
-	        <input type="hidden" name="next" value="/app/" />
-	      {% endif %}
+	    {% csrf_token %}
+	    {% if not '{{authform}}' %}
+	  	  {% if user.is_authenticated %}
+	  	    <a href="/app/" type="button" class="btn btn-lg btn-success active" role="button">Get in</a>
+	  	  {% else %}
+	        <h2 class="form-signin-heading">Please sign in</h2>
+	        {{authform}}
+	        {% if next %}
+      	      <input type="hidden" name="next" value="{{ next }}" />
+	        {% else %}
+	          <input type="hidden" name="next" value="/app/" />
+	        {% endif %}
 	      <input type="submit" value="login" class="btn btn-lg btn-primary">
+	      {% endif %}
 	    {% endif %}
 	  </form>
+	  {% endif %}
 
   </div>
 {% endblock %}

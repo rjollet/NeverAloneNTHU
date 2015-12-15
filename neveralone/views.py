@@ -25,14 +25,24 @@ def logout_page(request):
 
 def register(request):
     if request.method == 'POST':
+        print('POOOOOOOOST')
         uf = UserCreationForm(request.POST, prefix='user')
         upf = UserProfileCreationForm(request.POST, prefix='userprofile')
         if uf.is_valid() * upf.is_valid():
+            print('VALID')
             newUser = uf.save()
             userprofile = upf.save(commit=False)
             userprofile.user = newUser
             userprofile.save()
             user = authenticate(username=uf.cleaned_data['username'], password=uf.cleaned_data['password1'])
-            login(request, user)
-            print("User is valid, active and authenticated")
-            return HttpResponseRedirect('/app/')
+            if user is not None:
+                # the password verified for the auth
+                if user.is_active:
+                    login(request, user)
+                    print("User is valid, active and authenticated")
+                    return HttpResponseRedirect('/app/')
+    return render_to_response('index.html', dict(userform=uf, userprofileform=upf), context_instance=RequestContext(request))
+
+
+
+
