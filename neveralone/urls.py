@@ -25,7 +25,7 @@ urlpatterns = [
     # Login / logout.
     url(r'^login/$', auth_views.login ),
     url(r'^logout/$', logout_page),
-    url(r'^signin/$', signin),
+    url(r'^register/$', register),
 
     #app
 	url(r'^app/', include('app.urls')),

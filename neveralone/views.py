@@ -7,13 +7,13 @@ from django.template import RequestContext
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
-from .forms import UserProfileSigninForm
+from .forms import UserProfileCreationForm
 
 
 def main_page(request):
     af = AuthenticationForm()
     uf = UserCreationForm(prefix='user')
-    upf = UserProfileSigninForm(prefix='userprofile')
+    upf = UserProfileCreationForm(prefix='userprofile')
     return render_to_response('index.html', dict(authform=af, userform=uf, userprofileform=upf), context_instance=RequestContext(request))
 
 def logout_page(request):
@@ -23,10 +23,10 @@ def logout_page(request):
     logout(request)
     return HttpResponseRedirect('/')
 
-def signin(request):
+def register(request):
     if request.method == 'POST':
         uf = UserCreationForm(request.POST, prefix='user')
-        upf = UserProfileSigninForm(request.POST, prefix='userprofile')
+        upf = UserProfileCreationForm(request.POST, prefix='userprofile')
         if uf.is_valid() * upf.is_valid():
             newUser = uf.save()
             userprofile = upf.save(commit=False)
