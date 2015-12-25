@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% comment %}
+  Main page of NeverAlone's website.
+{% endcomment %}
+
+{% block head %}
+  <title>NeverAlone</title>
+{% endblock %}
+
+{% block body %}
+  <div class="jumbotron">
+      <h1>NeverAlone</h1>
+      <p>Welcome to NeverAlone. The best place to never be alone again</p>
+
+      <form method="POST" action="/register/">
+	    {% csrf_token %}
+	    {{userform}}
+	    {{userprofileform}}
+	    <input type="submit" value="Submit" class="btn btn-lg btn-primary">
+	  </form>
+
+	  {% if not authform %}
+	  <form method="post" action="/login/" class="form-signin">
+	    {% csrf_token %}
+	    {% if not '{{authform}}' %}
+	  	  {% if user.is_authenticated %}
+	  	    <a href="/app/" type="button" class="btn btn-lg btn-success active" role="button">Get in</a>
+	  	  {% else %}
+	        <h2 class="form-signin-heading">Please sign in</h2>
+	        {{authform}}
+	        {% if next %}
+      	      <input type="hidden" name="next" value="{{ next }}" />
+	        {% else %}
+	          <input type="hidden" name="next" value="/app/" />
+	        {% endif %}
+	      <input type="submit" value="login" class="btn btn-lg btn-primary">
+	      {% endif %}
+	    {% endif %}
+	  </form>
+	  {% endif %}
+
+  </div>
+{% endblock %}
+
