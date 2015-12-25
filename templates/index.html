@@ -19,7 +19,6 @@
 	    <input type="submit" value="Submit" class="btn btn-lg btn-primary">
 	  </form>
 
-	  {% if not authform %}
 	  <form method="post" action="/login/" class="form-signin">
 	    {% csrf_token %}
 	    {% if not '{{authform}}' %}
@@ -37,7 +36,6 @@
 	      {% endif %}
 	    {% endif %}
 	  </form>
-	  {% endif %}
 
   </div>
 {% endblock %}
