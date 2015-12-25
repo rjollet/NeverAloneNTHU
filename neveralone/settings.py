@@ -149,3 +149,7 @@ TEMPLATES = [
 
 # URL of the login page.
 LOGIN_URL = '/'
+
+
+# http://login:password@ip_address:port/db/data/
+os.environ['NEO4J_REST_URL'] = 'http://neo4j:NeverAlone@neo4j:7474/db/data/'
