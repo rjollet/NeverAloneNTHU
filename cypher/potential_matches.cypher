@@ -1,8 +1,7 @@
-# Should return potential matches based on similar interests of a particular user and number of interests in common with a particular user
-
-Considerations:
-1. ensure that person is not already a match with returned persons (to be implemented)
-2. check to make sure that people returned have similar interests in common and ensure gender interests are considered. For e.g. if Bob is interested in men, females or straight males would not be potential matches (implemented, currently assuming Interested_in is a String value)
+# Should return potential matches based on similar interests of a particular user and number of interests in common with #a particular user
+#Considerations:
+#1. ensure that person is not already a match with returned persons (to be implemented)
+#2. check to make sure that people returned have similar interests in common and ensure gender interests are considered. #For e.g. if Bob is interested in men, females or straight males would not be potential matches (implemented, currently #assuming Interested_in is a String value)
 
 
 # VERSION 1
@@ -18,7 +17,7 @@ ORDER BY pics_in_common DESC
 #VERSION 2
 #Additions:
 # ensure that the specified person is not already interested in returned persons and check for interests in common and ensure gender interests are considered 
-# one way to add weight to the relationship is by simply calculating the percentage match based on the number of picture interests in common other users have with the specified user 
+# one way to add weight to the relationship is by simply calculating the percentage match based on the number of picture #interests in common other users have with the specified user 
 #===================================================================================================
 MATCH (me)-[:LOOKING_FOR]->(mee:Picture)
 WHERE me.name='Monica beep'
