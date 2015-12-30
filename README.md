@@ -14,10 +14,15 @@ To build the image for django
 ```
 docker-compose build
 ```
-Torun our project
+To run our project
 
 ```
 docker-compose up
+```
+
+Import pictures
+```
+docker-compose run web ./manage.py flickr_import APITOKENS --max-import NBPICTURES
 ```
 
 ## [Django](https://docs.djangoproject.com/en/1.9/)

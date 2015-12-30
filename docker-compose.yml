@@ -12,7 +12,7 @@ neo4j:
   ports:
     - "7474:7474"
   environment:
-    NEO4J_AUTH: neo4j/neveralone
+    NEO4J_AUTH: neo4j/NeverAlone
 
 web:
   build: .
