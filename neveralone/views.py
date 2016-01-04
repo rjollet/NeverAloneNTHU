@@ -30,12 +30,9 @@ def logout_page(request):
 
 def register(request):
     if request.method == 'POST':
-        print('POOOOOOOOST')
         uf = UserCreationForm(request.POST, prefix='user')
         upf = UserProfileCreationForm(request.POST, prefix='userprofile')
         if uf.is_valid() * upf.is_valid():
-            print('VALID')
-
             # create user in the database
             newUser = uf.save()
             userprofile = upf.save(commit=False)
