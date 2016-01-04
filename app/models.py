@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
-from neomodel import StructuredNode, StringProperty, RelationshipTo, RelationshipFrom
+from neomodel import (
+    StructuredNode,
+    DateProperty, IntegerProperty, StringProperty, ArrayProperty,
+    Relationship, RelationshipTo, RelationshipFrom, StructuredRel,
+)
 
 
 class UserProfile(models.Model):
@@ -40,3 +44,56 @@ class Picture(StructuredNode):
     pictureURL = StringProperty(unique_index=True, required=True)
 
     tags = RelationshipTo('Interest', 'RELATED_TO')
+    persons_looking_for = RelationshipFrom('Person', 'LOOKING_FOR')
+
+
+class RecommandedRel(StructuredRel):
+    weight = IntegerProperty(default=1)
+
+
+class Person(StructuredNode):
+    user_profile_id = IntegerProperty(unique_index=True, required=True)
+    name = StringProperty()
+    gender = StringProperty(required=True, choices=UserProfile.GENDER)
+    interested_in = ArrayProperty(required=True)  # men, women, or both
+    date_of_birth = DateProperty(required=True)
+
+    looking_for = RelationshipTo('Picture', 'LOOKING_FOR')
+    interested_in_rel = RelationshipTo('Person', 'INTERESTED_IN')
+    recommanded = Relationship('Person', 'RECOMMANDED', model=RecommandedRel)
+
+    @classmethod
+    def from_database_profile(cls, profile):
+        """
+        Create a Person node object from the UserProfile database object (not automatically saved).
+
+        parameters
+        ----------
+        profile: UserProfile
+
+        returns
+        -------
+        Person
+        """
+        name = profile.user.username
+
+        user_profile_id = profile.user.pk
+        gender = profile.gender
+
+        # in the database, interested_in is a number (1 = men, 2 = women, 3 = both)
+        # in the graph, it is an array (e.g. [1, 2] = both men and women)
+        interested_in = [profile.interested_in]
+        if interested_in[0] == UserProfile.INTERESTED_IN_BOTH:
+            interested_in = [
+                UserProfile.INTERESTED_IN_MEN,
+                UserProfile.INTERESTED_IN_WOMEN]
+
+        date_of_birth = profile.dob
+
+        return Person(
+            user_profile_id=user_profile_id,
+            name=name,
+            gender=gender,
+            interested_in=interested_in,
+            date_of_birth=date_of_birth,
+        )
