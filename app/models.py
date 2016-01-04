@@ -7,23 +7,25 @@ class UserProfile(models.Model):
     MALE = 'M'
     FEMALE = 'F'
 
-    HOMOSEXUAL = 1
-    HETEROSEXUAL = 2
+    INTERESTED_IN_MEN = 1
+    INTERESTED_IN_WOMEN = 2
+    INTERESTED_IN_BOTH = 3
 
     GENDER = (
         (MALE, 'Man'),
         (FEMALE, 'Woman'),
     )
 
-    SEXUALITY = (
-        (HETEROSEXUAL, 'Heterosexual'),
-        (HOMOSEXUAL, 'Homosexual'),
+    INTERESTED_IN = (
+        (INTERESTED_IN_MEN, 'Men'),
+        (INTERESTED_IN_WOMEN, 'Women'),
+        (INTERESTED_IN_BOTH, 'Both'),
     )
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     dob = models.DateField()
     gender = models.CharField(max_length=1, choices=GENDER)
-    sexuality = models.IntegerField(choices=SEXUALITY)
+    interested_in = models.IntegerField(choices=INTERESTED_IN)
 
 
 class Interest(StructuredNode):
