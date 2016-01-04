@@ -53,7 +53,6 @@ def register(request):
                     login(request, user)
                     print("User is valid, active and authenticated")
                     return HttpResponseRedirect('/app/')
-    else:
-        af = AuthenticationForm()
 
+    af = AuthenticationForm()
     return render_to_response('index.html', dict(authform=af, userform=uf, userprofileform=upf), context_instance=RequestContext(request))
