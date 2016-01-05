@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 from neomodel import (
     StructuredNode,
     DateProperty, IntegerProperty, StringProperty, ArrayProperty,
@@ -30,6 +33,11 @@ class UserProfile(models.Model):
     dob = models.DateField()
     gender = models.CharField(max_length=1, choices=GENDER)
     interested_in = models.IntegerField(choices=INTERESTED_IN)
+
+    def save(self, *args, **kwargs):
+        super(UserProfile, self).save(*args, **kwargs) # Call the "real" save() method.
+        user_node = Person.from_database_profile(self)
+        user_node.save()
 
 
 class Interest(StructuredNode):

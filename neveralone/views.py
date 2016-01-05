@@ -33,15 +33,11 @@ def register(request):
         uf = UserCreationForm(request.POST, prefix='user')
         upf = UserProfileCreationForm(request.POST, prefix='userprofile')
         if uf.is_valid() * upf.is_valid():
-            # create user in the database
+
             newUser = uf.save()
             userprofile = upf.save(commit=False)
             userprofile.user = newUser
             userprofile.save()
-
-            # create user in the graph
-            user_node = Person.from_database_profile(userprofile)
-            user_node.save()
 
             user = authenticate(username=uf.cleaned_data['username'], password=uf.cleaned_data['password1'])
             if user is not None:
