@@ -1,14 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 from neomodel import (
     StructuredNode,
     DateProperty, IntegerProperty, StringProperty, ArrayProperty,
     Relationship, RelationshipTo, RelationshipFrom, StructuredRel,
+    db,
 )
-
 
 class UserProfile(models.Model):
     MALE = 'M'
@@ -35,10 +33,12 @@ class UserProfile(models.Model):
     interested_in = models.IntegerField(choices=INTERESTED_IN)
 
     def save(self, *args, **kwargs):
-        super(UserProfile, self).save(*args, **kwargs) # Call the "real" save() method.
-        user_node = Person.from_database_profile(self)
-        user_node.save()
-
+        if not self.pk:
+            super(UserProfile, self).save(*args, **kwargs) 
+            user_node = app.Person.from_database_profile(self)
+            user_node.save()
+        else:
+            Person.update_persone_profile(self)
 
 class Interest(StructuredNode):
     label = StringProperty(unique_index=True, required=True)
@@ -70,6 +70,15 @@ class Person(StructuredNode):
     interested_in_rel = RelationshipTo('Person', 'INTERESTED_IN')
     recommanded = Relationship('Person', 'RECOMMANDED', model=RecommandedRel)
 
+    # in the database, interested_in is a number (1 = men, 2 = women, 3 = both)
+    # in the graph, it is an array (e.g. [1, 2] = both men and women)
+    def interested_in_array(interested_in):
+        if interested_in == UserProfile.INTERESTED_IN_BOTH:
+            return [
+                UserProfile.INTERESTED_IN_MEN,
+                UserProfile.INTERESTED_IN_WOMEN]
+        return [interested_in]
+
     @classmethod
     def from_database_profile(cls, profile):
         """
@@ -88,13 +97,7 @@ class Person(StructuredNode):
         user_profile_id = profile.user.pk
         gender = profile.gender
 
-        # in the database, interested_in is a number (1 = men, 2 = women, 3 = both)
-        # in the graph, it is an array (e.g. [1, 2] = both men and women)
-        interested_in = [profile.interested_in]
-        if interested_in[0] == UserProfile.INTERESTED_IN_BOTH:
-            interested_in = [
-                UserProfile.INTERESTED_IN_MEN,
-                UserProfile.INTERESTED_IN_WOMEN]
+        interested_in = cls.interested_in_array(profile.interested_in)
 
         date_of_birth = profile.dob
 
@@ -105,3 +108,12 @@ class Person(StructuredNode):
             interested_in=interested_in,
             date_of_birth=date_of_birth,
         )
+
+    @db.transaction
+    def update_persone_profile(profile):
+        user = Person.nodes.filter(user_profile_id=profile.user.pk)[0][0]
+        user.name = profile.user.username
+        user.gender = profile.gender
+        user.interested_in = Person.interested_in_array(profile.interested_in)
+        user.date_of_birth = profile.dob
+        user.save()
