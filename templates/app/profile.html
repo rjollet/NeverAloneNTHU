@@ -1,0 +1,20 @@
+{% extends "app/app.html" %}
+{% comment %}
+  Edit your Profile in this page.
+{% endcomment %}
+
+{% block title %}
+  Profile Settings
+{% endblock %}
+
+{% block content %}
+  <section>
+    <h2>Welcome, {{ user.username }}</h2>
+    <p>Here you can edit your profile.</p>
+    <form method="POST" action="/app/profile/">
+	    {% csrf_token %}
+	    {{profileeditform}}
+	    <input type="submit" value="Submit" class="btn btn-lg btn-primary">
+	</form>
+  </section>
+{% endblock %}

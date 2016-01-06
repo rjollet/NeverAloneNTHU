@@ -35,7 +35,7 @@ class UserProfile(models.Model):
     def save(self, *args, **kwargs):
         if not self.pk:
             super(UserProfile, self).save(*args, **kwargs) 
-            user_node = app.Person.from_database_profile(self)
+            user_node = Person.from_database_profile(self)
             user_node.save()
         else:
             Person.update_persone_profile(self)
