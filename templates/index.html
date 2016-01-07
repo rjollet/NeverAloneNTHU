@@ -23,6 +23,25 @@
 	    <input type="submit" value="Submit" class="btn btn-lg btn-primary">
 	  </form>
   {% endif %}
+
+
+	  <form method="post" action="/login/" class="form-signin">
+	    {% csrf_token %}
+	    {% if user.is_authenticated %}
+	  	    <a href="/app/" type="button" class="btn btn-lg btn-success active" role="button">Get in</a>
+	  	{% else %}
+	    {% if '{{authform}}' %}
+	        <h2 class="form-signin-heading">Please sign in</h2>
+	        {{authform}}
+	        {% if next %}
+      	      <input type="hidden" name="next" value="{{ next }}" />
+	        {% else %}
+	          <input type="hidden" name="next" value="/app/" />
+	        {% endif %}
+	      <input type="submit" value="login" class="btn btn-lg btn-primary">
+	      {% endif %}
+	    {% endif %}
+	  </form>
   </div>
 {% endblock %}
 
