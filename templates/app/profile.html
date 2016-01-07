@@ -14,6 +14,9 @@
     <form method="POST" action="/app/profile/">
 	    {% csrf_token %}
 	    {{profileeditform}}
+	    {% if profileeditform.instance.profilePicture %}
+	    	<img src="{{ profileeditform.instance.profilePicture }}" />
+	    {% endif %}
 	    <input type="submit" value="Submit" class="btn btn-lg btn-primary">
 	</form>
   </section>

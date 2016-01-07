@@ -8,6 +8,8 @@ from neomodel import (
     db,
 )
 
+
+
 class UserProfile(models.Model):
     MALE = 'M'
     FEMALE = 'F'
@@ -31,6 +33,8 @@ class UserProfile(models.Model):
     dob = models.DateField()
     gender = models.CharField(max_length=1, choices=GENDER)
     interested_in = models.IntegerField(choices=INTERESTED_IN)
+    description = models.CharField(max_length=300, null=True, blank=True)
+    profilePicture = models.URLField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.pk:
