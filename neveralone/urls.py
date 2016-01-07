@@ -23,7 +23,8 @@ urlpatterns = [
 	url(r'^$', main_page),
 
     # Login / logout.
-    url(r'^login/$', auth_views.login ),
+    url(r'^login/$', auth_views.login),
+   # url(r'^auth/$', auth),
     url(r'^logout/$', logout_page),
     url(r'^register/$', register),
 
