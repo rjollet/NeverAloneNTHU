@@ -8,8 +8,6 @@ from neomodel import (
     db,
 )
 
-
-
 class UserProfile(models.Model):
     MALE = 'M'
     FEMALE = 'F'
@@ -38,10 +36,11 @@ class UserProfile(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            super(UserProfile, self).save(*args, **kwargs) 
+            super(UserProfile, self).save(*args, **kwargs)
             user_node = Person.from_database_profile(self)
             user_node.save()
         else:
+            super(UserProfile, self).save(*args, **kwargs)
             Person.update_persone_profile(self)
 
 class Interest(StructuredNode):
