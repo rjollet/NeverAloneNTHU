@@ -8,6 +8,7 @@ from neomodel import (
     db,
 )
 
+
 class UserProfile(models.Model):
     MALE = 'M'
     FEMALE = 'F'
@@ -42,6 +43,7 @@ class UserProfile(models.Model):
         else:
             super(UserProfile, self).save(*args, **kwargs)
             Person.update_persone_profile(self)
+
 
 class Interest(StructuredNode):
     label = StringProperty(unique_index=True, required=True)
@@ -120,3 +122,17 @@ class Person(StructuredNode):
         user.interested_in = Person.interested_in_array(profile.interested_in)
         user.date_of_birth = profile.dob
         user.save()
+
+    def get_random_not_looking_for_pictures(self, limit=10):
+        """
+        Return a random list of Picture-s that the Person is not yet LOOKING_FOR.
+        """
+        results, columns = self.cypher(
+            "START person=node({self}) "
+            "MATCH (p:Picture) "  # get all the pictures
+            "WHERE NOT (p)<-[:LOOKING_FOR]-(person) "  # that the Person is not LOOKING_FOR
+            "WITH p, RAND() as r RETURN p ORDER BY r LIMIT {limit}",  # randomly selecting {limit} of them
+            params={'limit': limit})
+
+        pictures = [Picture.inflate(row[0]) for row in results]
+        return pictures

@@ -7,6 +7,7 @@ from .forms import UserProfileEditForm, UsernameChangeForm
 from .models import UserProfile
 
 from django.contrib.auth.models import User
+from app.models import Person, Picture
 
 
 @login_required
@@ -17,7 +18,8 @@ def index(request):
     """
     user = request.user.pk
     userProfile = UserProfile.objects.get(user=request.user)
-    return render_to_response('app/index.html',dict(profile=userProfile), context_instance=RequestContext(request))
+    return render_to_response('app/index.html', dict(profile=userProfile), context_instance=RequestContext(request))
+
 
 @login_required
 def profile(request, template_name='app/profile.html'):
@@ -36,3 +38,23 @@ def profile(request, template_name='app/profile.html'):
     pef = UserProfileEditForm(instance=userProfile, prefix='profileedit')
     ucf = UsernameChangeForm(instance=user, prefix='usernamechange')
     return render_to_response(template_name, dict(profileeditform=pef, usernamechangeform=ucf), context_instance=RequestContext(request))
+
+
+@login_required
+def pictures_page(request):
+    user = request.user
+    person = Person.nodes.get(user_profile_id=user.pk)
+
+    if request.method == 'POST':
+        data = dict(request.POST)
+
+        looking_for_pictures = data.get('pictures', [])
+        for picture in looking_for_pictures:
+            person.looking_for.connect(Picture.nodes.get(pictureURL=picture))
+
+    pictures = person.get_random_not_looking_for_pictures(limit=18)
+
+    return render_to_response(
+        'app/select_pictures.html',
+        dict(pictures=pictures),
+        context_instance=RequestContext(request))
