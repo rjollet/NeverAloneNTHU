@@ -13,9 +13,9 @@ class UserProfile(models.Model):
     MALE = 'M'
     FEMALE = 'F'
 
-    INTERESTED_IN_MEN = 1
-    INTERESTED_IN_WOMEN = 2
-    INTERESTED_IN_BOTH = 3
+    INTERESTED_IN_MEN = 'M'
+    INTERESTED_IN_WOMEN = 'F'
+    INTERESTED_IN_BOTH = 'B'
 
     GENDER = (
         (MALE, 'Man'),
@@ -31,7 +31,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     dob = models.DateField()
     gender = models.CharField(max_length=1, choices=GENDER)
-    interested_in = models.IntegerField(choices=INTERESTED_IN)
+    interested_in = models.CharField(max_length=1, choices=INTERESTED_IN)
     description = models.CharField(max_length=300, null=True, blank=True)
     profilePicture = models.URLField(null=True, blank=True)
 
@@ -75,8 +75,8 @@ class Person(StructuredNode):
     interested_in_rel = RelationshipTo('Person', 'INTERESTED_IN')
     recommanded = Relationship('Person', 'RECOMMANDED', model=RecommandedRel)
 
-    # in the database, interested_in is a number (1 = men, 2 = women, 3 = both)
-    # in the graph, it is an array (e.g. [1, 2] = both men and women)
+    # in the database, interested_in is a number (M = men, F = women, B = both)
+    # in the graph, it is an array (e.g. [M, F] = both men and women)
     def interested_in_array(interested_in):
         if interested_in == UserProfile.INTERESTED_IN_BOTH:
             return [
@@ -144,16 +144,18 @@ class Person(StructuredNode):
         """
         Find potential matches based on picture interests
         """
-        results, columns = self.cypher(
-            "START me=node({self}) MATCH (me)-[:LOOKING_FOR]->(mee:Picture) "
-            "WITH me,count(mee) as total_interests_to_compare "
-            "MATCH (me)-[:LOOKING_FOR]->(Picture)<-[:LOOKING_FOR]-(others:Person) "
-            "WHERE me.Interested_in CONTAINS others.gender "
-            "AND others.Interested_in CONTAINS me.gender "
-            "AND NOT (me)-[:INTERESTED_IN]-(others) "
-            "AND NOT me=others "
-            "RETURN others.name as potential_matches,others.gender as gender, count(Picture.url) as num_pics_matched, total_interests_to_compare, "
-            "count(Picture.url)*100/total_interests_to_compare+'%' as percentage_match")
+        results, columns = self.cypher("""
+            START me=node({self}) MATCH (me)-[:LOOKING_FOR]->(mee:Picture)
+            WITH me,count(mee) as total_interests_to_compare
+            MATCH (me)-[:LOOKING_FOR]->(Picture)<-[:LOOKING_FOR]-(others:Person)
+            WHERE others.gender in me.interested_in
+            AND me.gender in others.interested_in
+            AND NOT (me)-[:INTERESTED_IN]-(others)
+            AND NOT me=others
+            RETURN others, count(Picture.url)*100/total_interests_to_compare
+            ORDER BY count(Picture.url)*100/total_interests_to_compare DESC
+            LIMIT 10""")
+        for row in results: print(row)
         return [self.__class__.inflate(row[0]) for row in results]
 
 

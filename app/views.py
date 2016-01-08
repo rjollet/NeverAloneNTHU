@@ -18,7 +18,13 @@ def index(request):
     """
     user = request.user.pk
     userProfile = UserProfile.objects.get(user=request.user)
-    return render_to_response('app/index.html', dict(profile=userProfile), context_instance=RequestContext(request))
+    person = Person.index.get(user_profile_id=user)
+    interested_in_me = person.interested_in_me()
+    matches = person.matches()
+    potential_matches = person.potential_matches()
+
+    return render_to_response('app/index.html', dict(interested_in_me=interested_in_me,matches=matches,potential_matches=potential_matches), context_instance=RequestContext(request))
+
 
 
 @login_required
