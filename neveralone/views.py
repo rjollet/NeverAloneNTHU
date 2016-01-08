@@ -16,10 +16,12 @@ from app.models import Person
 def main_page(request):
     if request.user.is_authenticated():
         user = request.user.id
-        me = Person.index.get(user_profile_id=user)
-        interested_in_me = me.interested_in_me()
-        matches = me.matches()
-        return render_to_response('app/index.html', dict(interested_in_me=interested_in_me,matches=matches), context_instance=RequestContext(request))
+        person = Person.index.get(user_profile_id=user)
+        interested_in_me = person.interested_in_me()
+        matches = person.matches()
+        potential_matches = person.potential_matches()
+
+        return render_to_response('app/index.html', dict(interested_in_me=interested_in_me,matches=matches,potential_matches=potential_matches), context_instance=RequestContext(request))
         #return HttpResponseRedirect('/app/')
     af = AuthenticationForm()
     uf = UserCreationForm(prefix='user')

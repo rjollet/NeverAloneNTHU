@@ -129,14 +129,31 @@ class Person(StructuredNode):
         """
         Return people interested in me
         """
-        results, metadata = self.cypher("START me=node({self}) MATCH others-[:INTERESTED_IN]->me RETURN others")
+        results, columns = self.cypher("START me=node({self}) MATCH others-[:INTERESTED_IN]->me RETURN others")
         return [self.__class__.inflate(row[0]) for row in results]
 
     def matches(self):
         """
-        we are interested in each other
+        We are interested in each other
         """
-        results, metadata = self.cypher("START me=node({self}) MATCH (others)-[:INTERESTED_IN]->(me)-[:INTERESTED_IN]->(others) RETURN others")
+        results, columns = self.cypher("START me=node({self}) MATCH (others)-[:INTERESTED_IN]->(me)-[:INTERESTED_IN]->(others) RETURN others")
+        return [self.__class__.inflate(row[0]) for row in results]
+
+     #not yet tested
+    def potential_matches(self):
+        """
+        Find potential matches based on picture interests
+        """
+        results, columns = self.cypher(
+            "START me=node({self}) MATCH (me)-[:LOOKING_FOR]->(mee:Picture) "
+            "WITH me,count(mee) as total_interests_to_compare "
+            "MATCH (me)-[:LOOKING_FOR]->(Picture)<-[:LOOKING_FOR]-(others:Person) "
+            "WHERE me.Interested_in CONTAINS others.gender "
+            "AND others.Interested_in CONTAINS me.gender "
+            "AND NOT (me)-[:INTERESTED_IN]-(others) "
+            "AND NOT me=others "
+            "RETURN others.name as potential_matches,others.gender as gender, count(Picture.url) as num_pics_matched, total_interests_to_compare, "
+            "count(Picture.url)*100/total_interests_to_compare+'%' as percentage_match")
         return [self.__class__.inflate(row[0]) for row in results]
 
 

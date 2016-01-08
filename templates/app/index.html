@@ -14,19 +14,22 @@
       <!--POTENTIAL MATCHES-->
         <div class="col-md-9">
           <div class="panel panel-success">
-           <div class="panel-heading"><span class="glyphicon glyphicon-heart-empty" style="color:red;" aria-hidden="true"></span> Recommendations: </div>
+           <div class="panel-heading"><span class="glyphicon glyphicon-heart-empty" style="color:red;" aria-hidden="true"></span> Here are your potential matches.. Ignite an interest to start matching.. </div>
 
            <div class="row">
              <div class="col-md-3">
-             {% if interested_in_me %}
-          	 {% for other in interested_in_me %}
-          	<a href="#" class="thumbnail"><img class="img-circle img-responsive center-block" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="80" height="80">
-           <p style="text-align:center;">{{ other.name }}, {{ other.gender }}</p>
-           </a>
+             {% if potential_matches %}
+          	 {% for other in potential_matches %}
+          	<div class="thumbnail"><img class="img-circle img-responsive center-block" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="80" height="80">
+           <p style="text-align:center;"><a href="#">{{ other.potential_matches }}, {{ other.gender }} </a>
+           <a href="#" title="Interested"><span class="glyphicon glyphicon-fire" style="color:red;" aria-hidden="true"></span></a>
+           </p>
+           </div>
            {% endfor %}
            {% else %}
-            <p style="text-align:center;">No one is intersted in you yet :( </p>
+            <p style="text-align:center;">No potential matches found :( </p>
            {% endif %}  
+           <hr>
            </div>
            </div>	   
         </div>
@@ -46,7 +49,7 @@
            </a>
            {% endfor %}
            {% else %}
-            <p style="text-align:center;">No one is intersted in you yet :( </p>
+            <p style="text-align:center;">No one is interested in you yet :( </p>
            {% endif %}
            <hr>
 
