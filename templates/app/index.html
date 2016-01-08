@@ -8,8 +8,74 @@
 {% endblock %}
 
 {% block content %}
-  <section>
-    <h2>Welcome, {{ user.username }}</h2>
-    <p>This is the main page of the web NeverAlones.</p>
-  </section>
+
+      <div class="row">
+
+      <!--POTENTIAL MATCHES-->
+        <div class="col-md-9">
+          <div class="panel panel-success">
+           <div class="panel-heading"><span class="glyphicon glyphicon-heart-empty" style="color:red;" aria-hidden="true"></span> Recommendations: </div>
+
+           <div class="row">
+             <div class="col-md-3">
+             {% if interested_in_me %}
+          	 {% for other in interested_in_me %}
+          	<a href="#" class="thumbnail"><img class="img-circle img-responsive center-block" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="80" height="80">
+           <p style="text-align:center;">{{ other.name }}, {{ other.gender }}</p>
+           </a>
+           {% endfor %}
+           {% else %}
+            <p style="text-align:center;">No one is intersted in you yet :( </p>
+           {% endif %}  
+           </div>
+           </div>	   
+        </div>
+        </div>
+
+        <!--PEOPLE INTERESTED IN YOU-->
+        <div class="col-md-3">
+          <div class="panel panel-success">
+           <div class="panel-heading"><span class="glyphicon glyphicon-fire" style="color:red;" aria-hidden="true"></span> People interested in you: </div>
+
+          <div class="panel-body" style="min-height: auto; max-height: 300px;overflow-y: scroll;">
+
+          	{% if interested_in_me %}
+          	{% for other in interested_in_me %}
+          	<a href="#"><img class="img-circle img-responsive center-block" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="80" height="80">
+           <p style="text-align:center;">{{ other.name }}, {{ other.gender }}, {{ other.date_of_birth }}</p>
+           </a>
+           {% endfor %}
+           {% else %}
+            <p style="text-align:center;">No one is intersted in you yet :( </p>
+           {% endif %}
+           <hr>
+
+          </div>
+        </div>
+        </div>
+
+
+       <!--BOTH INTERESTED IN EACH OTHER-->
+        <div class="col-md-3" style="float:right;margin-top:5px;">
+          <div class="panel panel-success">
+           <div class="panel-heading"><span class="glyphicon glyphicon-heart" style="color:red;" aria-hidden="true"></span> Matches: </div>
+           
+          <div class="panel-body" style="min-height: auto; max-height: 300px;overflow-y: scroll;">
+
+            {% if matches %}
+          	{% for other in matches %}
+          	<a href="#"><img class="img-circle img-responsive center-block" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="80" height="80">
+           <p style="text-align:center;">{{ other.name }}, {{ other.gender }}</p>
+           </a>
+           {% endfor %}
+           {% else %}
+            <p style="text-align:center;">No matches yet :( </p>
+           {% endif %}
+           <hr>
+
+          </div>
+        </div>
+        </div>
+        </div> 
 {% endblock %}
+

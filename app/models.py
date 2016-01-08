@@ -121,3 +121,15 @@ class Person(StructuredNode):
         user.interested_in = Person.interested_in_array(profile.interested_in)
         user.date_of_birth = profile.dob
         user.save()
+
+    #http://neomodel.readthedocs.org/en/latest/cypher.html
+    def interested_in_me(self):
+        results, metadata = self.cypher("START me=node({self}) MATCH others-[:INTERESTED_IN]->me RETURN others")
+        return [self.__class__.inflate(row[0]) for row in results]
+
+    def matches(self):
+        results, metadata = self.cypher("START me=node({self}) MATCH (others)-[:INTERESTED_IN]->(me)-[:INTERESTED_IN]->(others) RETURN others")
+        return [self.__class__.inflate(row[0]) for row in results]
+
+
+        

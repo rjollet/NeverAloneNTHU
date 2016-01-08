@@ -15,7 +15,11 @@ from app.models import Person
 
 def main_page(request):
     if request.user.is_authenticated():
-        return render_to_response('app/index.html', context_instance=RequestContext(request))
+        user = request.user.id
+        me = Person.index.get(user_profile_id=user)
+        interested_in_me = me.interested_in_me()
+        matches = me.matches()
+        return render_to_response('app/index.html', dict(interested_in_me=interested_in_me,matches=matches), context_instance=RequestContext(request))
         #return HttpResponseRedirect('/app/')
     af = AuthenticationForm()
     uf = UserCreationForm(prefix='user')
