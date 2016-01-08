@@ -7,20 +7,18 @@
   <title>NeverAlone | {% block title %}{% endblock %}</title>
 {% endblock %}
 
+{% block nav %}
+  {% csrf_token %}
+  <a href="/" type="button" class="btn btn-md btn-success active" role="button">Home</a>
+  <a href="/app/profile/" type="button" class="btn btn-md btn-success active" role="button">Profile</a>
+  <a href="/logout/" type="button" class="btn btn-md btn-success active" role="button">Logout, {{user.username}}</a>
+{% endblock %}
+
 {% block body %}
   <header>
     <h1>NeverAlone | Web app</h1>
   </header>
-
-  <section>
-    <ul>
-      <li><a href="/">home</a></li>
-      <li><a href="/app/profile">profile</a></li>
-      <li><a href="/logout/">logout</a></li>
-    </ul>
-  </section>
-
-  {% block content %}{% endblock %}
+{% block content %}{% endblock %}
 
   <footer>
     <span>&copy; 2015, NeverAloneNTHU</span>

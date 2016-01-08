@@ -7,13 +7,27 @@
   <title>NeverAlone</title>
 {% endblock %}
 
+{% block nav %}
+	{% csrf_token %}
+	{% if '{{authform}}' %}
+		<div class="form-group">
+			<span style="color:white;">Username:</span> {{authform.username}}
+		</div>
+		<div class="form-group">
+			<span style="color:white;">Password:</span> {{authform.password}}
+		</div>
+		{% if next %}
+			<input type="hidden" name="next" value="{{ next }}" />
+		{% else %}
+			<input type="hidden" name="next" value="/app/profile" />
+		{% endif %}
+			<button type="submit" class="btn btn-success">Sign in</button>
+	{% endif %}
+{% endblock %}
+
 
 {% block body %}
 
-  
-  {% if user.is_authenticated %}
-  
-  {% else %}
   <div class="jumbotron">
   <h1>NeverAlone</h1>
       <p>"The best place to never be alone again"</p>
@@ -24,9 +38,7 @@
 	    <input type="submit" value="Submit" class="btn btn-lg btn-primary">
 	  </form>
   </div>
-  {% endif %}
 
- 
 {% endblock %}
 
 <script type="text/javascript">
