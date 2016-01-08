@@ -9,7 +9,6 @@ from neomodel import (
 )
 
 
-
 class UserProfile(models.Model):
     MALE = 'M'
     FEMALE = 'F'
@@ -38,11 +37,13 @@ class UserProfile(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            super(UserProfile, self).save(*args, **kwargs) 
+            super(UserProfile, self).save(*args, **kwargs)
             user_node = Person.from_database_profile(self)
             user_node.save()
         else:
+            super(UserProfile, self).save(*args, **kwargs)
             Person.update_persone_profile(self)
+
 
 class Interest(StructuredNode):
     label = StringProperty(unique_index=True, required=True)
@@ -122,14 +123,34 @@ class Person(StructuredNode):
         user.date_of_birth = profile.dob
         user.save()
 
+
     #http://neomodel.readthedocs.org/en/latest/cypher.html
     def interested_in_me(self):
+        """
+        Return people interested in me
+        """
         results, metadata = self.cypher("START me=node({self}) MATCH others-[:INTERESTED_IN]->me RETURN others")
         return [self.__class__.inflate(row[0]) for row in results]
 
     def matches(self):
+        """
+        we are interested in each other
+        """
         results, metadata = self.cypher("START me=node({self}) MATCH (others)-[:INTERESTED_IN]->(me)-[:INTERESTED_IN]->(others) RETURN others")
         return [self.__class__.inflate(row[0]) for row in results]
 
 
-        
+    def get_random_not_looking_for_pictures(self, limit=10):
+        """
+        Return a random list of Picture-s that the Person is not yet LOOKING_FOR.
+        """
+        results, columns = self.cypher(
+            "START person=node({self}) "
+            "MATCH (p:Picture) "  # get all the pictures
+            "WHERE NOT (p)<-[:LOOKING_FOR]-(person) "  # that the Person is not LOOKING_FOR
+            "WITH p, RAND() as r RETURN p ORDER BY r LIMIT {limit}",  # randomly selecting {limit} of them
+            params={'limit': limit})
+
+        pictures = [Picture.inflate(row[0]) for row in results]
+        return pictures
+
