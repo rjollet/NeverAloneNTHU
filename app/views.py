@@ -7,7 +7,6 @@ from .forms import UserProfileEditForm, UsernameChangeForm
 from .models import UserProfile
 
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import PasswordChangeForm
 
 
 @login_required
@@ -22,15 +21,15 @@ def index(request):
 
 @login_required
 def profile(request, template_name='app/profile.html'):
+    from django.contrib.auth import update_session_auth_hash
     user = User.objects.get(pk=request.user.pk)
     userProfile = UserProfile.objects.get(user=request.user)
     if request.method == 'POST':
-
-        pef = UserProfileEditForm(request.POST, instance=userProfile, prefix='profileedit')
-        ucf = UsernameChangeForm(request.POST, instance=user, prefix='userchange')
-        if request.POST.get('usernamechange-email') is not None: user.email = request.POST.get('usernamechange-email')
-        if request.POST.get('usernamechange-username') is not None: user.username = request.POST.get('usernamechange-username')
-        user.save()
+        pef = UserProfileEditForm(request.POST or None, instance=userProfile, prefix='profileedit')
+        ucf = UsernameChangeForm(request.POST or None, instance=user, prefix='usernamechange')
+        if ucf.is_valid():
+            user = ucf.save()
+            user.save()
         if pef.is_valid():
             userProfile = pef.save()
             userProfile.save()
