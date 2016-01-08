@@ -14,6 +14,9 @@ from app.models import Person
 
 
 def main_page(request):
+    if request.user.is_authenticated():
+        return render_to_response('app/index.html', context_instance=RequestContext(request))
+        #return HttpResponseRedirect('/app/')
     af = AuthenticationForm()
     uf = UserCreationForm(prefix='user')
     upf = UserProfileCreationForm(prefix='userprofile')
