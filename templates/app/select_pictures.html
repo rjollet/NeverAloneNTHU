@@ -1,0 +1,39 @@
+{% extends "app/app.html" %}
+{% comment %}
+  A page which allows a user to select the pictures describing relationships he's interested in.
+{% endcomment %}
+
+{% block title %}
+  What are you looking for?
+{% endblock %}
+
+{% block content %}
+  <section>
+    <h2>What kind of relationship are you looking for?</h2>
+
+    <form method="POST" action="">
+      {% csrf_token %}
+
+      <fieldset>
+          <div class='row'>
+          {% for picture in pictures %}
+
+              <div class='col-sm-2'>
+                  <input type="checkbox" name="pictures" id="pictures_{{ forloop.counter }}" value="{{ picture.pictureURL }}" />
+                  <label for="pictures_{{ forloop.counter }}">
+                      <img src='{{ picture.pictureURL }}' alt='' class='img-thumbnail img-responsive' />
+                  </label>
+              </div><!-- .col-sm-2 -->
+
+              {% if forloop.counter|divisibleby:6 and not forloop.last %}
+          </div><!-- .row -->
+          <div class='row'>
+              {% endif %}
+          {% endfor %}
+          </div><!-- .row -->
+      </fieldset>
+
+      <input type="submit" value="Submit" class="btn btn-lg btn-primary">
+    </form>
+  </section>
+{% endblock %}
