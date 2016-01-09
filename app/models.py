@@ -72,7 +72,7 @@ class Person(StructuredNode):
 
     looking_for = RelationshipTo('Picture', 'LOOKING_FOR')
     interested_in_rel = RelationshipTo('Person', 'INTERESTED_IN')
-    recommanded = Relationship('Person', 'RECOMMANDED', model=RecommandedRel, cardinality=ZeroOrOne)
+    recommanded = Relationship('Person', 'RECOMMANDED', model=RecommandedRel)
 
     # in the database, interested_in is a number (M = men, F = women, B = both)
     # in the graph, it is an array (e.g. [M, F] = both men and women)
