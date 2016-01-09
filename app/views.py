@@ -60,10 +60,10 @@ def pictures_page(request):
             person.looking_for.connect(Picture.nodes.get(pictureURL=picture))
 
     pictures = person.get_random_not_looking_for_pictures(limit=18)
-
+    couple = person.get_random_couple()
     return render_to_response(
         'app/select_pictures.html',
-        dict(pictures=pictures),
+        dict(pictures=pictures, couple=couple),
         context_instance=RequestContext(request))
 
 @login_required
@@ -76,4 +76,20 @@ def interested_in_me(request, other=None):
         person.interested_in_rel.connect(other)
     return HttpResponseRedirect('/app/')
 
+@login_required
+def recommended(request, p1=None, p2=None, answer=1):
+    if request.method == 'POST' and p1 is not None and p2 is not None:
+        add = 1 if answer is 1 else -1
+        update = False
+        person1 = Person.nodes.get(user_profile_id=p1)
+        person2 = Person.nodes.get(user_profile_id=p2)
+        if person1.recommanded.is_connected(person2):
+            rel = person1.recommanded.relationship(person2)
+            rel.weight += add
+            rel.save()
+        else:
+            rel = person1.recommanded.connect(person2)
+            rel.weight += add
+            rel.save()
 
+    return HttpResponseRedirect('/app/pictures')

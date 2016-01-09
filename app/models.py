@@ -5,7 +5,7 @@ from neomodel import (
     StructuredNode,
     DateProperty, IntegerProperty, StringProperty, ArrayProperty,
     Relationship, RelationshipTo, RelationshipFrom, StructuredRel,
-    db,
+    db, ZeroOrOne,
 )
 
 
@@ -61,7 +61,7 @@ class Picture(StructuredNode):
 
 
 class RecommandedRel(StructuredRel):
-    weight = IntegerProperty(default=1)
+    weight = IntegerProperty(default=0)
 
 class Person(StructuredNode):
     user_profile_id = IntegerProperty(unique_index=True, required=True)
@@ -72,7 +72,7 @@ class Person(StructuredNode):
 
     looking_for = RelationshipTo('Picture', 'LOOKING_FOR')
     interested_in_rel = RelationshipTo('Person', 'INTERESTED_IN')
-    recommanded = Relationship('Person', 'RECOMMANDED', model=RecommandedRel)
+    recommanded = Relationship('Person', 'RECOMMANDED', model=RecommandedRel, cardinality=ZeroOrOne)
 
     # in the database, interested_in is a number (M = men, F = women, B = both)
     # in the graph, it is an array (e.g. [M, F] = both men and women)
@@ -204,3 +204,21 @@ class Person(StructuredNode):
         pictures = [Picture.inflate(row[0]) for row in results]
         return pictures
 
+    def get_random_couple(self):
+        """
+        Return a random couple of two people may look good together
+        """
+        results, columns = self.cypher("""
+            MATCH
+                  (p1:Person)
+                , (p2:Person)
+            WHERE
+                NOT (p1)-[:INTERESTED_IN]-(p2)
+            AND NOT p1=p2
+            AND p1.gender in p2.interested_in
+            AND p2.gender in p1.interested_in
+            RETURN p1.user_profile_id, p2.user_profile_id
+            SKIP toInt(RAND()*10000) LIMIT 1
+            """)
+        couples = [(UserProfile.objects.get(pk=row[0]), UserProfile.objects.get(pk=row[1])) for row in results]
+        return couples[0]

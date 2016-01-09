@@ -12,4 +12,5 @@ urlpatterns = [
         name="password_change"),
     url(r'^pictures/$', views.pictures_page, name='pictures_page'),
     url(r'^interested_in_me/(?P<other>[0-9]+)/$', views.interested_in_me, name='interested in me'),
+    url(r'^recommended/(?P<p1>[0-9]+)/(?P<p2>[0-9]+)/(?P<answer>[0-1]+)/$', views.recommended, name='recommended couple'),
 ]
