@@ -49,7 +49,8 @@ def profile(request, template_name='app/profile.html'):
 @login_required
 def pictures_page(request):
     user = request.user
-    person = Person.nodes.get(user_profile_id=user.pk)
+    userProfile = UserProfile.objects.get(user=request.user)
+    person = Person.nodes.get(user_profile_id=userProfile.pk)
 
     if request.method == 'POST':
         data = dict(request.POST)
