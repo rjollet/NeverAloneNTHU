@@ -99,7 +99,7 @@ class Person(StructuredNode):
         """
         name = profile.user.username
 
-        user_profile_id = profile.user.pk
+        user_profile_id = profile.pk
         gender = profile.gender
 
         interested_in = cls.interested_in_array(profile.interested_in)
@@ -116,7 +116,7 @@ class Person(StructuredNode):
 
     @db.transaction
     def update_persone_profile(profile):
-        user = Person.nodes.filter(user_profile_id=profile.user.pk)[0][0]
+        user = Person.nodes.filter(user_profile_id=profile.pk)[0][0]
         user.name = profile.user.username
         user.gender = profile.gender
         user.interested_in = Person.interested_in_array(profile.interested_in)
@@ -152,11 +152,10 @@ class Person(StructuredNode):
             AND me.gender in others.interested_in
             AND NOT (me)-[:INTERESTED_IN]-(others)
             AND NOT me=others
-            RETURN others, count(Picture.url)*100/total_interests_to_compare
+            RETURN others.user_profile_id, count(Picture.url)*100/total_interests_to_compare
             ORDER BY count(Picture.url)*100/total_interests_to_compare DESC
             LIMIT 10""")
-        for row in results: print(row)
-        return [self.__class__.inflate(row[0]) for row in results]
+        return [UserProfile.objects.get(pk=row[0]) for row in results]
 
 
     def get_random_not_looking_for_pictures(self, limit=10):
