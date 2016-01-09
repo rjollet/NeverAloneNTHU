@@ -142,18 +142,51 @@ class Person(StructuredNode):
     def potential_matches(self):
         """
         Find potential matches based on picture interests
+        We used differents queries using differents colaborative filtering
+        - resultsLookingFor: use the similarity based on the common picture both user are looking for
+        - resultsInterestedIn: use the smilarity based on if you are interested in the same people
         """
-        results, columns = self.cypher("""
-            START me=node({self}) MATCH (me)-[:LOOKING_FOR]->(mee:Picture)
-            WITH me,count(mee) as total_interests_to_compare
-            MATCH (me)-[:LOOKING_FOR]->(Picture)<-[:LOOKING_FOR]-(others:Person)
+
+        def combine_item_pairs(l1, l2):
+            D = {k:v for (k, v) in l1}
+            for (key, value) in l2:
+                if key in D:
+                    D[key] = (D[key] + value)/2
+                else:
+                    D[key] = value
+            return [(key, D[key]) for key in D]
+
+
+        resultsLookingFor, columns = self.cypher("""
+            START me=node({self})
+            MATCH  (me)-[:LOOKING_FOR]-(picture:Picture)-[:LOOKING_FOR]-(others)
+                 , (me)-[:LOOKING_FOR]-(pme:Picture)
+                 , (others)-[:LOOKING_FOR]-(pothers:Picture)
             WHERE others.gender in me.interested_in
             AND me.gender in others.interested_in
             AND NOT (me)-[:INTERESTED_IN]->(others)
             AND NOT me=others
-            RETURN others.user_profile_id, count(Picture.url)*100/total_interests_to_compare
-            ORDER BY count(Picture.url)*100/total_interests_to_compare DESC
-            LIMIT 10""")
+            RETURN others.user_profile_id, count(picture)/(count(pme)+count(pothers)-count(picture)) AS sim_jaccard
+            ORDER BY sim_jaccard DESC
+            LIMIT 100""")
+
+        resultsInterestedIn, columns = self.cypher("""
+            START me=node({self})
+            MATCH (me)-[:INTERSTED_IN]->(sameInterest:Person)<-[:INTERSTED_IN]-(others)
+                , (me)-[:INTERSTED_IN]->(meInterest:Person)
+                , (others)-[:INTERSTED_IN]->(otherInterest:Person)
+            WHERE others.gender in me.interested_in
+            AND me.gender in others.interested_in
+            AND NOT (me)-[:INTERESTED_IN]->(otherInterest)
+            AND NOT me=others
+            AND NOT me=otherInterest
+            RETURN otherInterest.user_profile_id, count(sameInterest)/(count(meInterest)+count(otherInterest)-count(sameInterest)) AS sim_jaccard
+            ORDER BY sim_jaccard DESC
+            LIMIT 100""")
+
+        results = combine_item_pairs([(row[0],row[1]) for row in resultsLookingFor], [(row[0],row[1]) for row in resultsInterestedIn])
+        results.sort(key=lambda tup: tup[1])
+        results.reverse()
         return [UserProfile.objects.get(pk=row[0]) for row in results]
 
 
