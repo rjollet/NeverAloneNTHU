@@ -128,15 +128,15 @@ class Person(StructuredNode):
         """
         Return people interested in me
         """
-        results, columns = self.cypher("START me=node({self}) MATCH others-[:INTERESTED_IN]->me RETURN others")
-        return [self.__class__.inflate(row[0]) for row in results]
+        results, columns = self.cypher("START me=node({self}) MATCH others-[:INTERESTED_IN]->me RETURN others.user_profile_id")
+        return [UserProfile.objects.get(pk=row[0]) for row in results]
 
     def matches(self):
         """
         We are interested in each other
         """
-        results, columns = self.cypher("START me=node({self}) MATCH (others)-[:INTERESTED_IN]->(me)-[:INTERESTED_IN]->(others) RETURN others")
-        return [self.__class__.inflate(row[0]) for row in results]
+        results, columns = self.cypher("START me=node({self}) MATCH (others)-[:INTERESTED_IN]->(me)-[:INTERESTED_IN]->(others) RETURN others.user_profile_id")
+        return [UserProfile.objects.get(pk=row[0]) for row in results]
 
      #not yet tested
     def potential_matches(self):

@@ -55,9 +55,22 @@
 
           	{% if interested_in_me %}
           	{% for other in interested_in_me %}
-          	<a href="#"><img class="img-circle img-responsive center-block" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="80" height="80">
-           <p style="text-align:center;">{{ other.name }}, {{ other.gender }}, {{ other.date_of_birth }}</p>
-           </a>
+          	<div class="thumbnail"><img class="img-circle img-responsive center-block"
+                {% if other.profilePicture %}
+                  src={{other.profilePicture}}
+                {% else %}
+                  src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="
+                {% endif %}
+                alt="Generic placeholder image" width="80" height="80">
+                  <p style="text-align:center;"><a href="#">{{ other.user.username }}, {{ other.gender }} </a>
+                    <a href="#" title="Interested"><span class="glyphicon glyphicon-fire" style="color:red;" aria-hidden="true"></span></a>
+                  </p>
+                  <p style="text-align:center;">{{ other.description }}</p>
+                  <form method="POST" action="/app/interested_in_me/{{ other.pk }}/">
+                  {% csrf_token %}
+                  <input type="submit" value="Contact" class="btn btn-lg btn-primary">
+                </form>
+                </div>
            {% endfor %}
            {% else %}
             <p style="text-align:center;">No one is interested in you yet :( </p>
@@ -78,9 +91,20 @@
 
             {% if matches %}
           	{% for other in matches %}
-          	<a href="#"><img class="img-circle img-responsive center-block" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="80" height="80">
-           <p style="text-align:center;">{{ other.name }}, {{ other.gender }}</p>
-           </a>
+          	<div class="thumbnail"><img class="img-circle img-responsive center-block"
+                {% if other.profilePicture %}
+                  src={{other.profilePicture}}
+                {% else %}
+                  src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="
+                {% endif %}
+                alt="Generic placeholder image" width="80" height="80">
+                  <p style="text-align:center;"><a href="#">{{ other.user.username }}, {{ other.gender }} </a>
+                    <a href="#" title="Interested"><span class="glyphicon glyphicon-fire" style="color:red;" aria-hidden="true"></span></a>
+                  </p>
+                  <p style="text-align:center;">{{ other.description }}</p>
+                  {{ other.user.email }}
+                </form>
+                </div>
            {% endfor %}
            {% else %}
             <p style="text-align:center;">No matches yet :( </p>
