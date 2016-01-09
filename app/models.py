@@ -128,7 +128,7 @@ class Person(StructuredNode):
         """
         Return people interested in me
         """
-        results, columns = self.cypher("START me=node({self}) MATCH others-[:INTERESTED_IN]->me RETURN others.user_profile_id")
+        results, columns = self.cypher("START me=node({self}) MATCH others-[:INTERESTED_IN]->me WHERE NOT (me)-[:INTERESTED_IN]->(others) RETURN others.user_profile_id")
         return [UserProfile.objects.get(pk=row[0]) for row in results]
 
     def matches(self):
