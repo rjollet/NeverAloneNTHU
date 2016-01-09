@@ -31,6 +31,10 @@
                     <a href="#" title="Interested"><span class="glyphicon glyphicon-fire" style="color:red;" aria-hidden="true"></span></a>
                   </p>
                   <p style="text-align:center;">{{ other.description }}</p>
+                  <form method="POST" action="/app/interested_in_me/{{ other.pk }}/">
+                  {% csrf_token %}
+                  <input type="submit" value="Contact" class="btn btn-lg btn-primary">
+                </form>
                 </div>
               {% endfor %}
             {% else %}

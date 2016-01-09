@@ -11,4 +11,5 @@ urlpatterns = [
         {'post_change_redirect': '/app/profile/'},
         name="password_change"),
     url(r'^pictures/$', views.pictures_page, name='pictures_page'),
+    url(r'^interested_in_me/(?P<other>[0-9]+)/$', views.interested_in_me, name='interested in me'),
 ]

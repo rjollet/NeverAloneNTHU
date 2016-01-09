@@ -63,7 +63,6 @@ class Picture(StructuredNode):
 class RecommandedRel(StructuredRel):
     weight = IntegerProperty(default=1)
 
-
 class Person(StructuredNode):
     user_profile_id = IntegerProperty(unique_index=True, required=True)
     name = StringProperty()
@@ -150,7 +149,7 @@ class Person(StructuredNode):
             MATCH (me)-[:LOOKING_FOR]->(Picture)<-[:LOOKING_FOR]-(others:Person)
             WHERE others.gender in me.interested_in
             AND me.gender in others.interested_in
-            AND NOT (me)-[:INTERESTED_IN]-(others)
+            AND NOT (me)-[:INTERESTED_IN]->(others)
             AND NOT me=others
             RETURN others.user_profile_id, count(Picture.url)*100/total_interests_to_compare
             ORDER BY count(Picture.url)*100/total_interests_to_compare DESC

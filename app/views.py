@@ -18,7 +18,7 @@ def index(request):
     """
     user = request.user.pk
     userProfile = UserProfile.objects.get(user=request.user)
-    person = Person.index.get(user_profile_id=user)
+    person = Person.index.get(user_profile_id=userProfile.pk)
     interested_in_me = person.interested_in_me()
     matches = person.matches()
     potential_matches = person.potential_matches()
@@ -65,3 +65,15 @@ def pictures_page(request):
         'app/select_pictures.html',
         dict(pictures=pictures),
         context_instance=RequestContext(request))
+
+@login_required
+def interested_in_me(request, other=None):
+    if request.method == 'POST' and other is not None:
+        user = request.user
+        userProfile = UserProfile.objects.get(user=request.user)
+        person = Person.nodes.get(user_profile_id=userProfile.pk)
+        other = Person.nodes.get(user_profile_id=other)
+        person.interested_in_rel.connect(other)
+    return HttpResponseRedirect('/app/')
+
+
