@@ -139,7 +139,7 @@ class Person(StructuredNode):
         return [UserProfile.objects.get(pk=row[0]) for row in results]
 
      #not yet tested
-    def potential_matches(self):
+    def potential_matches(self, limit=10):
         """
         Find potential matches based on picture interests
         We used differents queries using differents colaborative filtering
@@ -155,6 +155,16 @@ class Person(StructuredNode):
                 else:
                     D[key] = value
             return [(key, D[key]) for key in D]
+
+        resultsRandom, columns = self.cypher("""
+            START me=node({self})
+            MATCH (others:Person)
+            WHERE others.gender in me.interested_in
+            AND me.gender in others.interested_in
+            AND NOT (me)-[:INTERESTED_IN]->(others)
+            AND NOT me=others
+            RETURN others.user_profile_id, 0
+            SKIP (toInt(RAND()*100)%3)+1 LIMIT 10""")
 
 
         resultsLookingFor, columns = self.cypher("""
@@ -177,18 +187,22 @@ class Person(StructuredNode):
             WHERE NOT me=similarme
             WITH similarme,me,toFloat(count(sameInterest)) as intersection
             MATCH (me)-[:INTERESTED_IN]->(meInterest:Person)
+                , (similarme)-[:INTERESTED_IN]->(others:Person)
             WHERE others.gender in me.interested_in
             AND me.gender in others.interested_in
             AND NOT (me)-[:INTERESTED_IN]->(others)
             AND NOT me=others
-            RETURN otherInterest.user_profile_id, count(sameInterest)/(count(meInterest)+count(otherInterest)-count(sameInterest)) AS sim_jaccard
+            RETURN others.user_profile_id, intersection/(count(meInterest)+count(others)-intersection) AS sim_jaccard
             ORDER BY sim_jaccard DESC
             LIMIT 100""")
-
-        results = combine_item_pairs([(row[0],row[1]) for row in resultsLookingFor], [(row[0],row[1]) for row in resultsInterestedIn])
+        print(self._id)
+        preresults = combine_item_pairs([(row[0],row[1]) for row in resultsLookingFor], [(row[0],row[1]) for row in resultsRandom])
+        print(preresults)
+        results = combine_item_pairs([(row[0],row[1]) for row in resultsLookingFor], preresults)
+        print(results)
         results.sort(key=lambda tup: tup[1])
         results.reverse()
-        return [UserProfile.objects.get(pk=row[0]) for row in results]
+        return [UserProfile.objects.get(pk=row[0]) for row in results[0:limit]]
 
 
     def get_random_not_looking_for_pictures(self, limit=10):
