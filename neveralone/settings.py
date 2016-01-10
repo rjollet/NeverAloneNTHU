@@ -151,5 +151,5 @@ TEMPLATES = [
 LOGIN_URL = '/'
 
 
-#os.environ['NEO4J_REST_URL'] = 'http://neveralone:N21PTV6JyBeBXKpDHz05@neveralone.sb02.stations.graphenedb.com:24789/db/data/' 
-os.environ['NEO4J_REST_URL'] = 'http://neo4j:NeverAlone@128.199.183.216:7474/db/data/'
+os.environ['NEO4J_REST_URL'] = 'http://neveralone:N21PTV6JyBeBXKpDHz05@neveralone.sb02.stations.graphenedb.com:24789/db/data/' 
+#os.environ['NEO4J_REST_URL'] = 'http://neo4j:NeverAlone@128.199.183.216:7474/db/data/'

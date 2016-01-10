@@ -8,6 +8,9 @@
 {% endblock %}
 
 {% block content %}
+<style>
+#logo { height: 200px; width: 200px; overflow: hidden; }
+</style>
 
       <div class="row">
 
@@ -17,10 +20,12 @@
            <div class="panel-heading"><span class="glyphicon glyphicon-heart-empty" style="color:red;" aria-hidden="true"></span> Here are your potential matches.. Ignite an interest to start matching.. </div>
 
            <div class="row">
-             <div class="col-md-3">
+             
              {% if potential_matches %}
           	   {% for other in potential_matches %}
-          	    <div class="thumbnail"><img class="img-circle img-responsive center-block"
+               <div class="col-sm-5 col-md-4">
+          	    <div class="thumbnail"><div id="logo">
+                <img class="img-circle center-block"
                 {% if other.profilePicture %}
                   src={{other.profilePicture}}
                 {% else %}
@@ -33,15 +38,16 @@
                   <p style="text-align:center;">{{ other.description }}</p>
                   <form method="POST" action="/app/interested_in_me/{{ other.pk }}/">
                   {% csrf_token %}
-                  <input type="submit" value="Contact" class="btn btn-lg btn-primary">
+                  <input type="submit" value="Contact" class="btn btn-sm btn-primary">
                 </form>
-                </div>
+                </div></div>
+                 </div>
               {% endfor %}
             {% else %}
               <p style="text-align:center;">No potential matches found :( </p>
             {% endif %}
             <hr>
-            </div>
+           
           </div>
         </div>
         </div>
