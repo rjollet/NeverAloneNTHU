@@ -11,35 +11,6 @@
 
       <div class="row">
 
-      <!--suggest matches (recommedations)-->
-        <div class="col-md-3">
-          <div class="panel panel-success">
-           <div class="panel-heading"><span class="glyphicon glyphicon-thumbs-up" style="color:red;" aria-hidden="true"></span> Do you think they match? </div>
-           
-          <div class="panel-body" style="min-height: auto; max-height: 300px;overflow-y: scroll;">
-
-            {% if interested_in_me %}
-            {% for other in interested_in_me %}
-            <div class="thumbnail">
-            <div class="col-sm-4">
-            <img class="img-circle center-block" style="border:1px solid red;" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" max-height="90" height="90">
-            </div>
-
-            <div class="col-sm-8">
-            <img class="img-circle center-block" style="border:1px solid red;" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" max-height="90" height="90">
-            </div>
-           <a href="#" title="Recommend"><span class="glyphicon glyphicon-thumbs-up" style="color:red;" aria-hidden="true"></span></a>
-           </div>
-           {% endfor %}
-           {% else %}
-            <p style="text-align:center;">No suggestions </p>
-           {% endif %}
-           <hr>
-
-          </div>
-        </div>
-        </div>
-
       <!--POTENTIAL MATCHES-->
         <div class="col-md-9">
           <div class="panel panel-success">

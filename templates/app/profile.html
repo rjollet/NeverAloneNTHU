@@ -9,17 +9,17 @@
 
 {% block content %}
   <section>
-    <h2>Welcome, {{ user.username }}</h2>
-    <p>Here you can edit your profile.</p>
+  <h2>Welcome, {{ user.username }}</h2>
     <form method="POST" action="/app/profile/">
 	    {% csrf_token %}
 	    {{usernamechangeform}}
 	    {{profileeditform}}
 	    {% if profileeditform.instance.profilePicture %}
-	    	<img src="{{ profileeditform.instance.profilePicture }}" />
+	    	<img src="{{ profileeditform.instance.profilePicture }}" width="150px;" />
 	    {% endif %}
+	    <br>
+	    <input type="submit" value="Submit" class="btn btn-md btn-primary">   
 	    <a href="/app/profile/passwordchange/" type="button" class="btn btn-md btn-danger active" role="button">Change password</a>
-	    <input type="submit" value="Submit" class="btn btn-lg btn-primary">
 	</form>
   </section>
 {% endblock %}

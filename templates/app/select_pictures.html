@@ -8,9 +8,50 @@
 {% endblock %}
 
 {% block content %}
-  <section>
-    <h2>What kind of relationship are you looking for?</h2>
 
+<style>
+#logo { height: 100px; width: 200px; overflow: hidden; }
+</style>
+  <section>
+    <div style="margin: auto; max-width: 600px;">
+           <h3>Help others find love! Do they look good together ?</h3>
+          <div class="row">
+            {% if couple %}
+          
+            {% for profile in couple %}
+
+            <div class="col-sm-9 col-md-4">
+             <div class="thumbnsail"> <div id="logo">
+            <img class="img-circle center-block"
+            {% if profile.profilePicture %}
+              src={{profile.profilePicture}}
+            {% else %}
+              src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="
+            {% endif %}
+            alt="Generic placeholder image" width="80px" height="80px">
+              <p style="text-align:center;">{{ profile.user.username }}, {{ profile.gender }}
+                <span class="glyphicon glyphicon-fire" style="color:red;" aria-hidden="true"></span>
+              </p>
+              <!--<p style="text-align:center;">{{ profile.description }}</p>-->
+            </div>   </div>  
+            </div> 
+
+           {% endfor %}
+       <form method="POST" action="/app/recommended/{{ couple.0.pk }}/{{ couple.1.pk }}/1/">
+        {% csrf_token %}
+      <input type="submit" value="Yes" class="btn btn-lg btn-primary">
+      <form method="POST" action="/app/recommended/{{ couple.0.pk }}/{{ couple.1.pk }}/0/">
+        {% csrf_token %}
+      <input type="submit" value="No" class="btn btn-lg btn-danger">
+    </form>
+           {% endif %}
+           </div> </div>
+
+
+
+
+
+    <h2>What kind of relationship are you looking for?</h2>
     <form method="POST" action="">
       {% csrf_token %}
 
@@ -35,28 +76,6 @@
 
       <input type="submit" value="Submit" class="btn btn-lg btn-primary">
     </form>
-
-    <h2>Do they look good together ?</h2>
-      {% for profile in couple %}
-        <div class="thumbnail"><img class="img-circle img-responsive center-block"
-            {% if profile.profilePicture %}
-              src={{profile.profilePicture}}
-            {% else %}
-              src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="
-            {% endif %}
-            alt="Generic placeholder image" width="80" height="80">
-              <p style="text-align:center;">{{ profile.user.username }}, {{ profile.gender }}
-                <span class="glyphicon glyphicon-fire" style="color:red;" aria-hidden="true"></span>
-              </p>
-              <p style="text-align:center;">{{ profile.description }}</p>
-          </div>
-       {% endfor %}
-      <form method="POST" action="/app/recommended/{{ couple.0.pk }}/{{ couple.1.pk }}/1/">
-        {% csrf_token %}
-      <input type="submit" value="Yes" class="btn btn-lg btn-primary">
-      <form method="POST" action="/app/recommended/{{ couple.0.pk }}/{{ couple.1.pk }}/0/">
-        {% csrf_token %}
-      <input type="submit" value="No" class="btn btn-lg btn-danger">
-    </form>
+       
   </section>
 {% endblock %}
