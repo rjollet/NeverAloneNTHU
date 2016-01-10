@@ -32,8 +32,8 @@ class UserProfile(models.Model):
     dob = models.DateField()
     gender = models.CharField(max_length=1, choices=GENDER)
     interested_in = models.CharField(max_length=1, choices=INTERESTED_IN)
-    description = models.CharField(max_length=300, null=True, blank=True)
-    profilePicture = models.URLField(null=True, blank=True)
+    description = models.CharField(max_length=500, null=True, blank=True)
+    profilePicture = models.URLField(max_length=500, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.pk:
