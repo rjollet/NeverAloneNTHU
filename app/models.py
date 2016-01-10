@@ -195,13 +195,15 @@ class Person(StructuredNode):
             RETURN others.user_profile_id, intersection/(count(meInterest)+count(others)-intersection) AS sim_jaccard
             ORDER BY sim_jaccard DESC
             LIMIT 100""")
-        print(self._id)
+
+
+
         preresults = combine_item_pairs([(row[0],row[1]) for row in resultsLookingFor], [(row[0],row[1]) for row in resultsRandom])
-        print(preresults)
-        results = combine_item_pairs([(row[0],row[1]) for row in resultsLookingFor], preresults)
-        print(results)
+
+        results = combine_item_pairs([(row[0],row[1]) for row in resultsInterestedIn], preresults)
         results.sort(key=lambda tup: tup[1])
         results.reverse()
+        print(results)
         return [UserProfile.objects.get(pk=row[0]) for row in results[0:limit]]
 
 

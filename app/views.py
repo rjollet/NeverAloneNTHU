@@ -79,7 +79,7 @@ def interested_in_me(request, other=None):
 @login_required
 def recommended(request, p1=None, p2=None, answer=1):
     if request.method == 'POST' and p1 is not None and p2 is not None:
-        add = 1 if answer is 1 else -1
+        add = 1 if int(answer)==1 else -1
         update = False
         person1 = Person.nodes.get(user_profile_id=p1)
         person2 = Person.nodes.get(user_profile_id=p2)
