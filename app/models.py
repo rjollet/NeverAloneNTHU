@@ -166,6 +166,19 @@ class Person(StructuredNode):
             RETURN others.user_profile_id, 0
             SKIP (toInt(RAND()*100)%3)+1 LIMIT 10""")
 
+        resultsRecommanded, columns = self.cypher("""
+            START me=node({self})
+            MATCH (me:Person)-[rel:RECOMMANDED]-(others:Person)
+            WHERE others.gender in me.interested_in
+            AND me.gender in others.interested_in
+            AND NOT (me)-[:INTERESTED_IN]->(others)
+            AND NOT me=others
+            AND rel.weight>0
+            WITH me, others, toFloat(rel.weight) as val
+            MATCH (me:Person)-[allRel:RECOMMANDED]-(:Person)
+            WHERE allRel.weight>0
+            RETURN others.user_profile_id, val/sum(allRel.weight) as sim
+            LIMIT 10""")
 
         resultsLookingFor, columns = self.cypher("""
             START me=node({self})
@@ -196,11 +209,9 @@ class Person(StructuredNode):
             ORDER BY sim_jaccard DESC
             LIMIT 100""")
 
-
-
-        preresults = combine_item_pairs([(row[0],row[1]) for row in resultsLookingFor], [(row[0],row[1]) for row in resultsRandom])
-
-        results = combine_item_pairs([(row[0],row[1]) for row in resultsInterestedIn], preresults)
+        results1 = combine_item_pairs([(row[0],row[1]) for row in resultsRecommanded], [(row[0],row[1]) for row in resultsRandom])
+        results2 = combine_item_pairs([(row[0],row[1]) for row in resultsLookingFor], results1)
+        results = combine_item_pairs([(row[0],row[1]) for row in resultsInterestedIn], results2)
         results.sort(key=lambda tup: tup[1])
         results.reverse()
         print(results)
