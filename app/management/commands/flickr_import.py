@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
+from django.core.management import call_command
 from app.models import Picture, Interest
 
 from argparse import ArgumentTypeError
@@ -11,7 +12,7 @@ class Command(BaseCommand):
             'saves them in the graph with their related interests')
 
     MAX_IMPORTED_PHOTOS = 100
-    SEARCH_TAG = 'couple'
+    SEARCH_TAG = 'couple,love'
 
     def check_max_import_arg(self, value):
         """raises ArgumentTypeError if the argument is not a positive number"""
@@ -53,11 +54,13 @@ class Command(BaseCommand):
                 limit=max_imported)
 
             self.save_to_graph(photos)
+
+            call_command('trim_graph', verbosity=3, interactive=False)
         except KeyboardInterrupt:
             self.stderr.write("\rCommand interrupted!")
 
     def retrieve_photos_from_flickr(self, api_key, secret,
-                                    limit, preferred_size='Square'):
+                                    limit, preferred_size='Large Square'):
         """
         parameters
         ----------
@@ -97,7 +100,8 @@ class Command(BaseCommand):
         index = 1
         for photo in flickr.walk(
                 tags=self.SEARCH_TAG,
-                is_commons=True):  # only search for photos that are totally free to use
+                tag_mode='all',
+                license="2,3,4,6"):
 
             if index > limit:
                 break
