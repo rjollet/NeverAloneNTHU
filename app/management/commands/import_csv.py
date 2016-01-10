@@ -22,16 +22,18 @@ class Command(BaseCommand):
 
             for row_index, row in enumerate(data, start=1):
                 # format of a user data row:
-                # username,password,dob,gender,interested_in,description,picture
+                # username,password,dob,gender,interested_in,description,picture,email
                 # * dob is in year-month-day format (e.g. 1991-01-21)
                 # * gender is either M or F (see model for UserProfile)
                 # * interested_in is either M, F or B
                 # * description is a string (no comma allowed)
                 # * picture is the URL of the user's profile picture
-                username, password, dob_raw, gender, interested_in, description, picture = row
+                # * email is an email address
+                username, password, dob_raw, gender, interested_in, description, picture, email = row
 
                 user = User.objects.create_user(
                     username=username,
+                    email=email,
                     password=password)
 
                 try:
