@@ -159,27 +159,28 @@ class Person(StructuredNode):
 
         resultsLookingFor, columns = self.cypher("""
             START me=node({self})
-            MATCH  (me)-[:LOOKING_FOR]-(picture:Picture)-[:LOOKING_FOR]-(others)
-                 , (me)-[:LOOKING_FOR]-(pme:Picture)
-                 , (others)-[:LOOKING_FOR]-(pothers:Picture)
+            MATCH (me)-[:LOOKING_FOR]-(picture:Picture)-[:LOOKING_FOR]-(others)
             WHERE others.gender in me.interested_in
             AND me.gender in others.interested_in
             AND NOT (me)-[:INTERESTED_IN]->(others)
             AND NOT me=others
-            RETURN others.user_profile_id, count(picture)/(count(pme)+count(pothers)-count(picture)) AS sim_jaccard
+            WITH me,others,toFloat(count(picture)) as intersection
+            MATCH (me)-[:LOOKING_FOR]-(pme:Picture)
+            , (others)-[:LOOKING_FOR]-(pothers:Picture)
+            RETURN others.user_profile_id, intersection/(count(pme)+count(pothers)-intersection) AS sim_jaccard
             ORDER BY sim_jaccard DESC
             LIMIT 100""")
 
         resultsInterestedIn, columns = self.cypher("""
             START me=node({self})
-            MATCH (me)-[:INTERSTED_IN]->(sameInterest:Person)<-[:INTERSTED_IN]-(others)
-                , (me)-[:INTERSTED_IN]->(meInterest:Person)
-                , (others)-[:INTERSTED_IN]->(otherInterest:Person)
+            MATCH (me)-[:INTERESTED_IN]->(sameInterest:Person)<-[:INTERESTED_IN]-(similarme)
+            WHERE NOT me=similarme
+            WITH similarme,me,toFloat(count(sameInterest)) as intersection
+            MATCH (me)-[:INTERESTED_IN]->(meInterest:Person)
             WHERE others.gender in me.interested_in
             AND me.gender in others.interested_in
-            AND NOT (me)-[:INTERESTED_IN]->(otherInterest)
+            AND NOT (me)-[:INTERESTED_IN]->(others)
             AND NOT me=others
-            AND NOT me=otherInterest
             RETURN otherInterest.user_profile_id, count(sameInterest)/(count(meInterest)+count(otherInterest)-count(sameInterest)) AS sim_jaccard
             ORDER BY sim_jaccard DESC
             LIMIT 100""")
