@@ -33,9 +33,54 @@
       <p>"The best place to never be alone again"</p>
       <form method="POST" action="/register/" class="form-horizontal" role="form">
 	    {% csrf_token %}
-	    {{userform}}
-	    {{userprofileform}}
-	    <input type="submit" value="Submit" class="btn btn-lg btn-primary">
+	    {{ userform.media }}
+	    {{ userprofileform.media }}
+	    {% if userform.errors %}
+	        <div class="alert alert-error">
+	            <ul>
+	                {% for error in userform.non_field_errors %}
+	                    <li>{{ error }}</li>
+	                {% endfor %}
+	            </ul>
+	        </div>
+	    {% endif %}
+	    {% if userprofileform.errors %}
+	        <div class="alert alert-error">
+	            <ul>
+	                {% for error in userprofileform.non_field_errors %}
+	                    <li>{{ error }}</li>
+	                {% endfor %}
+	            </ul>
+	        </div>
+	    {% endif %}
+	    <p style="text-align:center;">My friends call me {{userform.username}},<br/>
+	    I am a {{userprofileform.gender}} born the {{userprofileform.dob}}<br/>
+	    and I am looking for {{userprofileform.interested_in}}.</p>
+	    <div class="row">
+		    <div class="col-md-12 control-group {{ userform.password1.html_name }} {% if userform.password1.errors %}error{% endif %}">
+		    	<div class="col-md-6">
+	            	<p class="control-label">{{ userform.password1.label }}{% if userform.password1.field.required %} *{% endif %}</p>
+	            </div>
+	            <div class=" col-md-6 controls">
+	                {{ userform.password1 }}
+	                {% if userform.password1.errors %}<span class="help-inline">{{ userform.password1.errors.as_text }}</span>{% endif %}
+	            </div>
+	        </div>
+	        <div class="col-md-12 center-block control-group {{ userform.password2.html_name }} {% if userform.password2.errors %}error{% endif %}">
+	            <div class="col-md-6">
+	            	<p class="control-label">{{ userform.password2.label }}{% if userform.password2.field.required %} *{% endif %}</p>
+	            </div>
+	            <div class=" col-md-6 controls" >
+	                {{ userform.password2 }}
+	                {% if userform.password2.errors %}<span class="help-inline">{{ userform.password2.errors.as_text }}</span>{% endif %}
+	            </div>
+	        </div>
+        </div><br/><br/>
+	    <div class="form-actions">
+	        <input class="btn btn-primary btn-large center-block" type="submit" value="Submit"/>
+	        {% block extra_buttons %}
+	        {% endblock extra_buttons %}
+	    </div>
 	  </form>
   </div>
 

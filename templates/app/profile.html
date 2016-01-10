@@ -9,14 +9,13 @@
 
 {% block content %}
   <section>
-  <h2>Welcome, {{ user.username }}</h2>
     <form method="POST" action="/app/profile/">
 	    {% csrf_token %}
-	    {{usernamechangeform}}
-	    {{profileeditform}}
 	    {% if profileeditform.instance.profilePicture %}
-	    	<img src="{{ profileeditform.instance.profilePicture }}" width="150px;" />
+	    	<img src="{{ profileeditform.instance.profilePicture }}" width="150px;" /><br/><br/>
 	    {% endif %}
+	    {{usernamechangeform.as_p}}
+	    {{profileeditform.as_p}}
 	    <br>
 	    <input type="submit" value="Submit" class="btn btn-md btn-primary">   
 	    <a href="/app/profile/passwordchange/" type="button" class="btn btn-md btn-danger active" role="button">Change password</a>
