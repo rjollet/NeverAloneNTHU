@@ -13,8 +13,8 @@
 #logo { height: 100px; width: 200px; overflow: hidden; }
 </style>
   <section>
-    <div style="margin: auto; max-width: 600px;">
-       <h3>Help others find love! Do they look good together ?</h3>
+    <div style="margin: auto; max-width: 600px; background:#DFF0D8">
+       <h3 style="text-align:center">Help others find love! Do they look good together ?</h3>
         <div class="row">
           {% if couple %}
             {% for profile in couple %}
@@ -27,7 +27,7 @@
                 src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="
               {% endif %}
               alt="Generic placeholder image" width="80px" height="80px">
-                <p style="text-align:center;">{{ profile.user.username }}, {{ profile.gender }}
+                <p style="text-align:center; ">{{ profile.user.username }}, {{ profile.gender }}
                   <span class="glyphicon glyphicon-fire" style="color:red;" aria-hidden="true"></span>
                 </p>
                 <!--<p style="text-align:center;">{{ profile.description }}</p>-->
@@ -49,12 +49,9 @@
           {% endif %}
         </div>
       </div>
+      <br>
 
-
-
-
-
-    <h2>What kind of relationship are you looking for?</h2>
+    <h2 style="text-align:center">What kind of relationship are you looking for?</h2>
     <form method="POST" action="">
       {% csrf_token %}
 
