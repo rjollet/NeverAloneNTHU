@@ -51,3 +51,6 @@ migrations/
 
 # Sphinx documentation
 docs/_build/
+
+.DS_Store
+data/*
