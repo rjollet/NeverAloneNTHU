@@ -194,6 +194,22 @@ class Person(StructuredNode):
             ORDER BY sim_jaccard DESC
             LIMIT 100""")
 
+        resultsRElatedTo, columns = self.cypher("""
+            START me=node({self})
+            MATCH (me)-[:LOOKING_FOR]-(:Picture)-[:RELATED_TO]-(i:Interest)-[rel:RELATED_TO]-(:Picture)-[:LOOKING_FOR]-(others)
+            WHERE others.gender in me.interested_in
+            AND me.gender in others.interested_in
+            AND NOT (me)-[:INTERESTED_IN]->(others)
+            AND NOT me=others
+            WITH me,others,toFloat(count(i)) as intersection
+            MATCH (me)-[:LOOKING_FOR]-(:Picture)-[:RELATED_TO]-(ime:Interest)
+            , (others)-[:LOOKING_FOR]-(:Picture)-[:RELATED_TO]-(iothers:Interest)
+            RETURN others.user_profile_id, intersection/(count(ime)+count(iothers)-intersection) AS sim_jaccard
+            ORDER BY sim_jaccard DESC
+            LIMIT 100
+            """)
+        print(resultsRElatedTo)
+
         resultsInterestedIn, columns = self.cypher("""
             START me=node({self})
             MATCH (me)-[:INTERESTED_IN]->(sameInterest:Person)<-[:INTERESTED_IN]-(similarme)
@@ -210,8 +226,9 @@ class Person(StructuredNode):
             LIMIT 100""")
 
         results1 = combine_item_pairs([(row[0],row[1]) for row in resultsRecommanded], [(row[0],row[1]) for row in resultsRandom])
-        results2 = combine_item_pairs([(row[0],row[1]) for row in resultsLookingFor], results1)
-        results = combine_item_pairs([(row[0],row[1]) for row in resultsInterestedIn], results2)
+        results2 = combine_item_pairs([(row[0],row[1]) for row in resultsLookingFor], [(row[0],row[1]) for row in resultsRElatedTo])
+        results3 = combine_item_pairs([(row[0],row[1]) for row in resultsInterestedIn], results1)
+        results = combine_item_pairs(results2, results3)
         results.sort(key=lambda tup: tup[1])
         results.reverse()
         print(results)
